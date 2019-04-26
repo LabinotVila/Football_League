@@ -18,6 +18,8 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class Main extends JFrame {
 
@@ -72,6 +74,7 @@ public class Main extends JFrame {
 		cmb_fetched_seasons.setBounds(35, 75, 100, 25);
 		panel.add(cmb_fetched_seasons);
 		
+		
 		txt_season = new JTextField();
 		txt_season.setFont(new Font("Corbel", Font.BOLD, 12));
 		txt_season.setText("Season");
@@ -89,7 +92,7 @@ public class Main extends JFrame {
 				try
 				{
 					st = conn.createStatement();
-					st.execute("insert into Seasons (`number`) values ("+get_txt_season+");");
+					st.execute("insert into Seasons values ("+get_txt_season+");");
 					
 					cmb_fetched_seasons.addItem(get_txt_season);
 					
@@ -115,7 +118,7 @@ public class Main extends JFrame {
 				try
 				{
 					st = conn.createStatement();
-					st.execute("delete from Seasons where `number` = "+get_txt_season+";");
+					st.execute("delete from Seasons where number = "+get_txt_season+";");
 					
 					cmb_fetched_seasons.removeItem(cmb_fetched_seasons.getSelectedItem()); // duhet keshtu per arsye se parametri i pare eshte objekt, e jo integer si lart
 					
@@ -152,8 +155,6 @@ public class Main extends JFrame {
 		cmb_fetched_weeks.setBounds(195, 75, 100, 25);
 		panel.add(cmb_fetched_weeks);
 		
-
-		
 		ResultSet fetched_seasons = Helper.fetchSeasons();
 		try
 		{
@@ -166,5 +167,40 @@ public class Main extends JFrame {
 		{
 			ex.printStackTrace();
 		}
+		
+		ResultSet fetched_weeks = Helper.fetchWeeks(Integer.parseInt(cmb_fetched_seasons.getItemAt(0).toString()));
+		try
+		{
+			while(fetched_weeks.next())
+			{
+				cmb_fetched_weeks.addItem(fetched_weeks.getString(1));
+			}
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+		cmb_fetched_seasons.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) 
+			{
+				Helper.clearComboBox(cmb_fetched_weeks);
+				
+				int selected_season = Integer.parseInt(cmb_fetched_seasons.getSelectedItem().toString());
+				
+				ResultSet fetched_weeks = Helper.fetchWeeks(selected_season);
+				try
+				{
+					while(fetched_weeks.next())
+					{
+						cmb_fetched_weeks.addItem(fetched_weeks.getString(1));
+					}
+				}
+				catch (Exception ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		});
 	}
 }
