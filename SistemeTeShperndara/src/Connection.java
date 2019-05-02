@@ -7,8 +7,7 @@ public class Connection
 	{
 		try
 		{
-			java.sql.Connection conn = DriverManager.getConnection
-					("jdbc:mysql://localhost:3306/League?useSSL=false", "", "");
+			java.sql.Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/League?useSSL=false", "", "");
 			
 			return conn;
 		}

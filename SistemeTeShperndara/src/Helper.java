@@ -24,12 +24,29 @@ public class Helper
 		}
 	}
 	
-	public static ResultSet fetchWeeks(int week)
+	public static ResultSet fetchWeeks(int from_season)
 	{
 		try 
 		{
 			Statement st = conn.createStatement();	
-			ResultSet res = st.executeQuery("select * from Weeks where season="+week+";");
+			ResultSet res = st.executeQuery("select * from Weeks where season="+from_season+";");
+			
+			return res;
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			
+			return null;
+		}
+	}
+	
+	public static ResultSet fetchTeams()
+	{
+		try
+		{
+			Statement st = conn.createStatement();
+			ResultSet res = st.executeQuery("select name from Teams;");
 			
 			return res;
 		}
