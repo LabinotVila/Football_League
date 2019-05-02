@@ -34,6 +34,7 @@ public class Main extends JFrame {
 	private ResultSet res = null;
 	private JTextField txt_week;
 	private JTextField txt_team;
+	private JTextField txt_date;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -77,7 +78,7 @@ public class Main extends JFrame {
 		JLabel lbl_notify = new JLabel("");
 		lbl_notify.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_notify.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lbl_notify.setBounds(10, 540, 330, 13);
+		lbl_notify.setBounds(10, 540, 966, 13);
 		contentPane.add(lbl_notify);	
 		
 		JPanel panel = new JPanel();
@@ -292,6 +293,63 @@ public class Main extends JFrame {
 		
 		ResultSet fetched_teams = Helper.fetchTeams();
 		addResultSetIntoComboBox(fetched_teams, cmb_fetched_teams);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		panel_2.setBounds(350, 33, 626, 235);
+		contentPane.add(panel_2);
+		panel_2.setLayout(null);
+		
+		JButton btn_add_game = new JButton("Add Game");
+		btn_add_game.setBounds(238, 152, 150, 35);
+		panel_2.add(btn_add_game);
+		btn_add_game.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		
+		JComboBox cmb_team_one = new JComboBox();
+		cmb_team_one.setBounds(76, 33, 150, 25);
+		panel_2.add(cmb_team_one);
+		
+		JComboBox cmb_team_two = new JComboBox();
+		cmb_team_two.setBounds(238, 33, 150, 25);
+		panel_2.add(cmb_team_two);
+		
+		txt_date = new JTextField();
+		txt_date.setBounds(400, 33, 150, 25);
+		panel_2.add(txt_date);
+		txt_date.setColumns(10);
+		
+		JLabel lblTeam = new JLabel("Team 1");
+		lblTeam.setBounds(76, 10, 150, 14);
+		panel_2.add(lblTeam);
+		lblTeam.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel lblTeam_1 = new JLabel("Team 2");
+		lblTeam_1.setBounds(238, 11, 150, 13);
+		panel_2.add(lblTeam_1);
+		lblTeam_1.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel lblDate = new JLabel("Date");
+		lblDate.setBounds(400, 11, 150, 13);
+		panel_2.add(lblDate);
+		lblDate.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JComboBox cmb_season = new JComboBox();
+		cmb_season.setBounds(138, 105, 100, 25);
+		panel_2.add(cmb_season);
+		
+		JComboBox cmb_week = new JComboBox();
+		cmb_week.setBounds(388, 105, 100, 25);
+		panel_2.add(cmb_week);
+		
+		JLabel lblSeason = new JLabel("Season");
+		lblSeason.setBounds(138, 82, 100, 13);
+		panel_2.add(lblSeason);
+		lblSeason.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel lblWeek = new JLabel("Week");
+		lblWeek.setBounds(388, 82, 100, 13);
+		panel_2.add(lblWeek);
+		lblWeek.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		cmb_fetched_seasons.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) 
