@@ -291,8 +291,7 @@ public class Main extends JFrame {
 		ResultSet fetched_weeks = Helper.fetchWeeks(Integer.parseInt(cmb_fetched_seasons.getItemAt(0).toString()));
 		addResultSetIntoComboBox(fetched_weeks, cmb_fetched_weeks);
 		
-		ResultSet fetched_teams = Helper.fetchTeams();
-		addResultSetIntoComboBox(fetched_teams, cmb_fetched_teams);
+		addResultSetIntoComboBox(Helper.fetchTeams(), cmb_fetched_teams);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -306,50 +305,70 @@ public class Main extends JFrame {
 		btn_add_game.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		
 		JComboBox cmb_team_one = new JComboBox();
+		cmb_team_one.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		cmb_team_one.setBounds(76, 33, 150, 25);
 		panel_2.add(cmb_team_one);
+		addResultSetIntoComboBox(Helper.fetchTeams(), cmb_team_one);
 		
 		JComboBox cmb_team_two = new JComboBox();
+		cmb_team_two.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		cmb_team_two.setBounds(238, 33, 150, 25);
 		panel_2.add(cmb_team_two);
+		addResultSetIntoComboBox(Helper.fetchTeams(), cmb_team_two);
 		
 		txt_date = new JTextField();
+		txt_date.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txt_date.setBounds(400, 33, 150, 25);
 		panel_2.add(txt_date);
 		txt_date.setColumns(10);
 		
 		JLabel lblTeam = new JLabel("Team 1");
+		lblTeam.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblTeam.setBounds(76, 10, 150, 14);
 		panel_2.add(lblTeam);
 		lblTeam.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JLabel lblTeam_1 = new JLabel("Team 2");
+		lblTeam_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblTeam_1.setBounds(238, 11, 150, 13);
 		panel_2.add(lblTeam_1);
 		lblTeam_1.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JLabel lblDate = new JLabel("Date");
+		lblDate.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblDate.setBounds(400, 11, 150, 13);
 		panel_2.add(lblDate);
 		lblDate.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JComboBox cmb_season = new JComboBox();
+		cmb_season.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		cmb_season.setBounds(138, 105, 100, 25);
 		panel_2.add(cmb_season);
+		addResultSetIntoComboBox(Helper.fetchSeasons(), cmb_season);
 		
 		JComboBox cmb_week = new JComboBox();
+		cmb_week.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		cmb_week.setBounds(388, 105, 100, 25);
 		panel_2.add(cmb_week);
+		addResultSetIntoComboBox(Helper.fetchWeeks(Integer.parseInt(cmb_fetched_seasons.getItemAt(0).toString())), cmb_week);
 		
 		JLabel lblSeason = new JLabel("Season");
+		lblSeason.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblSeason.setBounds(138, 82, 100, 13);
 		panel_2.add(lblSeason);
 		lblSeason.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JLabel lblWeek = new JLabel("Week");
+		lblWeek.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblWeek.setBounds(388, 82, 100, 13);
 		panel_2.add(lblWeek);
 		lblWeek.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel lblMatchesManager = new JLabel("Matches Manager");
+		lblMatchesManager.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMatchesManager.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblMatchesManager.setBounds(350, 10, 626, 13);
+		contentPane.add(lblMatchesManager);
 		
 		cmb_fetched_seasons.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) 
@@ -364,6 +383,27 @@ public class Main extends JFrame {
 					while(fetched_weeks.next())
 					{
 						cmb_fetched_weeks.addItem(fetched_weeks.getString(1));
+					}
+				}
+				catch (Exception ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		});
+		cmb_season.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) 
+			{
+				Helper.clearComboBox(cmb_week);
+				
+				int selected_season = Integer.parseInt(cmb_season.getSelectedItem().toString());
+				
+				ResultSet fetched_weeks = Helper.fetchWeeks(selected_season);
+				try
+				{
+					while(fetched_weeks.next())
+					{
+						cmb_week.addItem(fetched_weeks.getString(1));
 					}
 				}
 				catch (Exception ex)
