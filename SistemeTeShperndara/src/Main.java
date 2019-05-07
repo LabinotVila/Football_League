@@ -105,52 +105,11 @@ public class Main extends JFrame {
 		
 		JButton btn_create_season = new JButton("Create Season");
 		btn_create_season.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btn_create_season.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) 
-			{
-				int get_txt_season = Integer.parseInt(txt_season.getText());
-				
-				try
-				{
-					st = conn.createStatement();
-					st.execute("insert into Seasons values ("+get_txt_season+");");
-					
-					cmb_fetched_seasons.addItem(get_txt_season);
-					
-					lbl_notify.setText("You have successfully added the season!");
-				}
-				catch (Exception ex)
-				{
-					lbl_notify.setText("An error occured while creating season!");
-				}
-				
-			}
-		});
 		btn_create_season.setBounds(10, 135, 150, 35);
 		panel.add(btn_create_season);
 		
 		JButton btn_delete_season = new JButton("Delete Season");
 		btn_delete_season.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btn_delete_season.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) 
-			{
-				int get_txt_season = Integer.parseInt(cmb_fetched_seasons.getSelectedItem().toString());
-				
-				try
-				{
-					st = conn.createStatement();
-					st.execute("delete from Seasons where number = "+get_txt_season+";");
-					
-					cmb_fetched_seasons.removeItem(cmb_fetched_seasons.getSelectedItem()); // duhet keshtu per arsye se parametri i pare eshte objekt, e jo integer si lart
-					
-					lbl_notify.setText("You have successfully deleted the season!");
-				}
-				catch(Exception ex)
-				{
-					lbl_notify.setText("An error occured while deleting season!");
-				}
-			}
-		});
 		
 		txt_week = new JTextField();
 		txt_week.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -165,29 +124,6 @@ public class Main extends JFrame {
 		panel.add(cmb_fetched_weeks);		
 		
 		JButton btn_create_week = new JButton("Create Season Week");
-		btn_create_week.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) 
-			{
-				int get_txt_season = Integer.parseInt(cmb_fetched_seasons.getSelectedItem().toString());
-				int get_txt_week = Integer.parseInt(txt_week.getText().toString());
-				
-				try
-				{
-					st = conn.createStatement();
-					st.execute("insert into Weeks values ("+get_txt_week+", "+get_txt_season+");");
-					
-					cmb_fetched_weeks.addItem(txt_week.getText());
-					
-					lbl_notify.setText("You have successfully added a week!");
-				}
-				catch (Exception ex)
-				{
-					ex.printStackTrace();
-					
-					lbl_notify.setText("An error occured and week could not be added");
-				}
-			}
-		});
 		btn_create_week.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btn_create_week.setBounds(10, 180, 150, 35);
 		panel.add(btn_create_week);
@@ -223,55 +159,11 @@ public class Main extends JFrame {
 		panel_1.add(cmb_fetched_teams);
 		
 		JButton btn_create_team = new JButton("Create Team");
-		btn_create_team.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) 
-			{
-				String team_name = txt_team.getText().toString();
-				
-				try
-				{
-					st = conn.createStatement();
-					st.execute("insert into Teams (name) values ('"+team_name+"');");
-					
-					cmb_fetched_teams.addItem(team_name);
-					
-					lbl_notify.setText("Team has been created successfully!");
-				}
-				catch (Exception ex)
-				{
-					lbl_notify.setText("An error occured while creating the team!");
-
-					ex.printStackTrace();
-				}
-			}
-		});
 		btn_create_team.setBounds(90, 135, 150, 35);
 		panel_1.add(btn_create_team);
 		btn_create_team.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		
 		JButton btn_delete_team = new JButton("Delete Team");
-		btn_delete_team.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) 
-			{
-				String selected_item = cmb_fetched_teams.getSelectedItem().toString();
-				
-				try
-				{
-					st = conn.createStatement();
-					st.execute("delete from Teams where name='"+selected_item+"';");
-					
-					lbl_notify.setText(selected_item + " has successfully been deleted!");
-					
-					cmb_fetched_teams.removeItem(cmb_fetched_teams.getSelectedItem());
-				}
-				catch(Exception ex)
-				{
-					lbl_notify.setText("An error occured while deleting a team!");
-					
-					ex.printStackTrace();
-				}
-			}
-		});
 		btn_delete_team.setBounds(90, 180, 150, 35);
 		panel_1.add(btn_delete_team);
 		btn_delete_team.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -381,7 +273,14 @@ public class Main extends JFrame {
 		contentPane.add(panel_3);
 		panel_3.setLayout(null);
 		
-		JButton btnShowEverything = new JButton("Show Everything");
+		JButton btnShowEverything = new JButton("Show Chat");
+		btnShowEverything.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				dispose();
+				Chat.main(null);
+			}
+		});
 		btnShowEverything.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnShowEverything.setBounds(466, 10, 150, 35);
 		panel_3.add(btnShowEverything);
@@ -394,7 +293,6 @@ public class Main extends JFrame {
 		panel_3.add(txt_show_latest);
 		
 		JButton btn_show_latest = new JButton("Show Latest");
-
 		btn_show_latest.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btn_show_latest.setBounds(120, 10, 150, 35);
 		panel_3.add(btn_show_latest);
@@ -412,11 +310,6 @@ public class Main extends JFrame {
 		latest_scroll.setBounds(10,55,606,170);
 		panel_3.add(latest_scroll);
 		
-		JButton button = new JButton("Show Everything");
-		button.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		button.setBounds(296, 10, 150, 35);
-		panel_3.add(button);
-		
 		
 		JLabel lblDisplayLatestAdditions = new JLabel("Display Latest Additions");
 		lblDisplayLatestAdditions.setHorizontalAlignment(SwingConstants.CENTER);
@@ -424,6 +317,102 @@ public class Main extends JFrame {
 		lblDisplayLatestAdditions.setBounds(350, 278, 626, 15);
 		contentPane.add(lblDisplayLatestAdditions);
 		
+		// Delete team button
+		btn_delete_team.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				String selected_item = cmb_fetched_teams.getSelectedItem().toString();
+				
+				try
+				{
+					st = conn.createStatement();
+					st.execute("delete from Teams where name='"+selected_item+"';");
+					
+					lbl_notify.setText(selected_item + " has successfully been deleted!");
+					
+					cmb_fetched_teams.removeItem(cmb_fetched_teams.getSelectedItem());
+				}
+				catch(Exception ex)
+				{
+					lbl_notify.setText("An error occured while deleting a team!");
+					
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		// Create season for specific week
+		btn_create_week.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				int get_txt_season = Integer.parseInt(cmb_fetched_seasons.getSelectedItem().toString());
+				int get_txt_week = Integer.parseInt(txt_week.getText().toString());
+				
+				try
+				{
+					st = conn.createStatement();
+					st.execute("insert into Weeks values ("+get_txt_week+", "+get_txt_season+");");
+					
+					cmb_fetched_weeks.addItem(txt_week.getText());
+					
+					lbl_notify.setText("You have successfully added a week!");
+				}
+				catch (Exception ex)
+				{
+					ex.printStackTrace();
+					
+					lbl_notify.setText("An error occured and week could not be added");
+				}
+			}
+		});
+		
+		//Delete season button
+		btn_delete_season.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				int get_txt_season = Integer.parseInt(cmb_fetched_seasons.getSelectedItem().toString());
+				
+				try
+				{
+					st = conn.createStatement();
+					st.execute("delete from Seasons where number = "+get_txt_season+";");
+					
+					cmb_fetched_seasons.removeItem(cmb_fetched_seasons.getSelectedItem()); // duhet keshtu per arsye se parametri i pare eshte objekt, e jo integer si lart
+					
+					lbl_notify.setText("You have successfully deleted the season!");
+				}
+				catch(Exception ex)
+				{
+					lbl_notify.setText("An error occured while deleting season!");
+				}
+			}
+		});
+		
+		//Create team button
+		btn_create_team.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				String team_name = txt_team.getText().toString();
+				
+				try
+				{
+					st = conn.createStatement();
+					st.execute("insert into Teams (name) values ('"+team_name+"');");
+					
+					cmb_fetched_teams.addItem(team_name);
+					
+					lbl_notify.setText("Team has been created successfully!");
+				}
+				catch (Exception ex)
+				{
+					lbl_notify.setText("An error occured while creating the team!");
+
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		// When window opens, fill the respective checkboxes
 		cmb_fetched_seasons.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) 
 			{
@@ -445,6 +434,8 @@ public class Main extends JFrame {
 				}
 			}
 		});
+		
+		// When season combo box is clicked, fill the weeks
 		cmb_season.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) 
 			{
@@ -466,6 +457,7 @@ public class Main extends JFrame {
 				}
 			}
 		});
+		
 		// ADD GAME button handler
 		btn_add_game.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
@@ -524,8 +516,6 @@ public class Main extends JFrame {
 					table_model.removeRow(i);
 				}
 				
-				
-				
 				try
 				{
 					int latest_input = Integer.parseInt(txt_show_latest.getText().toString());
@@ -536,11 +526,21 @@ public class Main extends JFrame {
 					while (latest.next())
 					{
 						String team_one = latest.getString(1);
-						String team_two = latest.getString(2);
+						String team_two = latest.getString(1);
 						String date = latest.getString(3);
 						String week = latest.getString(4);
 						String season = latest.getString(5);
 						
+						ResultSet teams = st.executeQuery("select id, name from teams");
+						while (teams.next())
+						{
+							if (teams.getString(1).equals(team_one))
+								team_one = teams.getString(2);
+							
+							if (teams.getString(1).equals(team_two))
+								team_two = teams.getString(2);
+						}
+
 						table_model.addRow(new Object[] {team_one, team_two, date, week, season});
 					}
 					
@@ -552,5 +552,6 @@ public class Main extends JFrame {
 				}
 			}
 		});
+		
 	}
 }

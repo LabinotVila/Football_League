@@ -66,4 +66,20 @@ public class Helper
 		}
 	}
 
+	public static String findTeamById(int team_id)
+	{	
+		try
+		{
+			Statement st = conn.createStatement();
+			ResultSet query = st.executeQuery("select name from teams where id="+team_id+";");
+			
+			return query.getString(1);
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+		return null;
+	}
 }
