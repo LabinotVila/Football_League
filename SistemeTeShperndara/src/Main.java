@@ -412,6 +412,11 @@ public class Main extends JFrame {
 		latest_scroll.setBounds(10,55,606,170);
 		panel_3.add(latest_scroll);
 		
+		JButton button = new JButton("Show Everything");
+		button.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		button.setBounds(296, 10, 150, 35);
+		panel_3.add(button);
+		
 		
 		JLabel lblDisplayLatestAdditions = new JLabel("Display Latest Additions");
 		lblDisplayLatestAdditions.setHorizontalAlignment(SwingConstants.CENTER);
