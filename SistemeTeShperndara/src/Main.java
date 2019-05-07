@@ -5,6 +5,7 @@ import java.sql.Statement;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
@@ -13,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -25,6 +27,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.SwingConstants;
+import javax.swing.JTable;
 
 public class Main extends JFrame {
 
@@ -35,6 +38,7 @@ public class Main extends JFrame {
 	private JTextField txt_week;
 	private JTextField txt_team;
 	private JTextField txt_date;
+	private JTextField txt_show_latest;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -78,7 +82,7 @@ public class Main extends JFrame {
 		JLabel lbl_notify = new JLabel("");
 		lbl_notify.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_notify.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lbl_notify.setBounds(10, 540, 966, 13);
+		lbl_notify.setBounds(10, 540, 966, 15);
 		contentPane.add(lbl_notify);	
 		
 		JPanel panel = new JPanel();
@@ -204,7 +208,7 @@ public class Main extends JFrame {
 		JLabel lblNewLabel = new JLabel("Season and Week Manager");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel.setBounds(10, 10, 330, 13);
+		lblNewLabel.setBounds(10, 10, 330, 15);
 		contentPane.add(lblNewLabel);
 		
 		JPanel panel_1 = new JPanel();
@@ -282,7 +286,7 @@ public class Main extends JFrame {
 		JLabel lblTeamManager = new JLabel("Teams Manager");
 		lblTeamManager.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTeamManager.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblTeamManager.setBounds(10, 278, 330, 13);
+		lblTeamManager.setBounds(10, 278, 330, 15);
 		contentPane.add(lblTeamManager);
 		
 		ResultSet fetched_seasons = Helper.fetchSeasons();
@@ -317,6 +321,7 @@ public class Main extends JFrame {
 		addResultSetIntoComboBox(Helper.fetchTeams(), cmb_team_two);
 		
 		txt_date = new JTextField();
+		txt_date.setText("YYYY-MM-DD");
 		txt_date.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txt_date.setBounds(400, 33, 150, 25);
 		panel_2.add(txt_date);
@@ -367,8 +372,52 @@ public class Main extends JFrame {
 		JLabel lblMatchesManager = new JLabel("Matches Manager");
 		lblMatchesManager.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMatchesManager.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblMatchesManager.setBounds(350, 10, 626, 13);
+		lblMatchesManager.setBounds(350, 10, 626, 15);
 		contentPane.add(lblMatchesManager);
+		
+		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		panel_3.setBounds(350, 301, 626, 235);
+		contentPane.add(panel_3);
+		panel_3.setLayout(null);
+		
+		JButton btnShowEverything = new JButton("Show Everything");
+		btnShowEverything.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnShowEverything.setBounds(466, 10, 150, 35);
+		panel_3.add(btnShowEverything);
+		
+		txt_show_latest = new JTextField();
+		txt_show_latest.setText("Team Name");
+		txt_show_latest.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		txt_show_latest.setColumns(10);
+		txt_show_latest.setBounds(10, 10, 100, 35);
+		panel_3.add(txt_show_latest);
+		
+		JButton btn_show_latest = new JButton("Show Latest");
+
+		btn_show_latest.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btn_show_latest.setBounds(120, 10, 150, 35);
+		panel_3.add(btn_show_latest);
+		
+		DefaultTableModel table_model = new DefaultTableModel();
+		table_model.addColumn("Team 1");
+		table_model.addColumn("Team 2");
+		table_model.addColumn("Date");
+		table_model.addColumn("Season");
+		table_model.addColumn("Week");
+		
+		JTable table = new JTable(table_model);
+		
+		JScrollPane latest_scroll = new JScrollPane(table);
+		latest_scroll.setBounds(10,55,606,170);
+		panel_3.add(latest_scroll);
+		
+		
+		JLabel lblDisplayLatestAdditions = new JLabel("Display Latest Additions");
+		lblDisplayLatestAdditions.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDisplayLatestAdditions.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblDisplayLatestAdditions.setBounds(350, 278, 626, 15);
+		contentPane.add(lblDisplayLatestAdditions);
 		
 		cmb_fetched_seasons.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) 
@@ -409,6 +458,92 @@ public class Main extends JFrame {
 				catch (Exception ex)
 				{
 					ex.printStackTrace();
+				}
+			}
+		});
+		// ADD GAME button handler
+		btn_add_game.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				String team_one = cmb_team_one.getSelectedItem().toString();
+				String team_two = cmb_team_two.getSelectedItem().toString();
+				String team_one_id = null;
+				String team_two_id = null;
+				String date = txt_date.getText();
+				int season = Integer.parseInt(cmb_season.getSelectedItem().toString());
+				int week = Integer.parseInt(cmb_week.getSelectedItem().toString());
+				
+				try
+				{
+					st = conn.createStatement();
+					ResultSet loop_teams = st.executeQuery("select * from teams");
+					while (loop_teams.next())
+					{
+						String returned_team = loop_teams.getString(2);
+						
+						if (returned_team.equals(team_one))
+							team_one_id = loop_teams.getString(1);
+						
+						if (returned_team.equals(team_two))
+							team_two_id = loop_teams.getString(1);
+					}
+
+				    try
+					{
+				    	st = conn.createStatement();
+						st.execute("insert into Matches (first_team, second_team, date, week_id, season_id) values ("+team_one_id+", "+team_two_id+", '"+date+"', "+week+", "+season+")");
+						
+						lbl_notify.setText("You have successfully added the game!");
+					}
+				    catch (Exception ex)
+				    {
+				    	ex.printStackTrace();
+				    	
+				    	lbl_notify.setText("Please fill the information correctly!");
+				    }
+				}
+				catch (Exception ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		});
+	
+		// SHOW LATEST button handler, show latest games
+		btn_show_latest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				// Empty the table model before adding new content
+				for (int i = 0; i < table_model.getRowCount(); i++)
+				{
+					table_model.removeRow(i);
+				}
+				
+				
+				
+				try
+				{
+					int latest_input = Integer.parseInt(txt_show_latest.getText().toString());
+					
+					st = conn.createStatement();
+					ResultSet latest = st.executeQuery("select first_team, second_team, date, week_id, season_id from Matches limit "+latest_input+";");
+					
+					while (latest.next())
+					{
+						String team_one = latest.getString(1);
+						String team_two = latest.getString(2);
+						String date = latest.getString(3);
+						String week = latest.getString(4);
+						String season = latest.getString(5);
+						
+						table_model.addRow(new Object[] {team_one, team_two, date, week, season});
+					}
+					
+					lbl_notify.setText("You have successfully shown "+latest_input+" latest games!");
+				}
+				catch (Exception ex)
+				{
+					lbl_notify.setText("Please enter a valid number!");
 				}
 			}
 		});
