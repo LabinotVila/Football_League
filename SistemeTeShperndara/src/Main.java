@@ -278,7 +278,11 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent e) 
 			{
 				dispose();
-				Chat.main(null);
+				
+				
+			    Client client = new Client();
+			    client.startConnection("127.0.0.1", 6666);
+			    String response = client.sendMessage("hello server");
 			}
 		});
 		btnShowEverything.setFont(new Font("Tahoma", Font.PLAIN, 12));
