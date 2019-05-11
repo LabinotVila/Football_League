@@ -4,45 +4,49 @@ import java.io.*;
 public class Server {
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
-	private PrintWriter out;
-	private BufferedReader in;
-	
-	public void start (int port)
+	public void start (int port) throws IOException
 	{
-		try
-		{
-			serverSocket = new ServerSocket(port);
-			clientSocket = serverSocket.accept();
+		serverSocket = new ServerSocket(port);
+		System.out.println("Server started");
 		
-			out = new PrintWriter(clientSocket.getOutputStream(), true);
-			in = new BufferedReader (new InputStreamReader (clientSocket.getInputStream()));
-			
-			String greeting = in.readLine();
-			System.out.println(greeting);
-			out.println("Hello from server to client");
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
+		while (true)
+			new HandleClient(serverSocket.accept()).start();
 	}
 	
-	public void stop ()
+	public void stop() throws IOException
 	{
-		try
+		serverSocket.close();
+	}
+	
+	public static class HandleClient extends Thread
+	{
+		private Socket clientSocket;
+		private BufferedReader in;
+		private PrintWriter out;
+		
+		public HandleClient(Socket socket)
 		{
-			in.close();
-			out.close();
-			clientSocket.close();
-			serverSocket.close();
+			this.clientSocket = socket;
 		}
-		catch (Exception ex)
+		
+		public void run()
 		{
-			ex.printStackTrace();
+			try
+			{
+				out = new PrintWriter(clientSocket.getOutputStream(), true);
+				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));	
+				
+				out.println(in.readLine());
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
 		}
 	}
 	
-	public static void main (String[] args)
+	
+	public static void main (String[] args) throws IOException
 	{
 		Server server = new Server();
 		server.start(6666);

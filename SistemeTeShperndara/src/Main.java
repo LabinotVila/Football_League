@@ -277,12 +277,14 @@ public class Main extends JFrame {
 		btnShowEverything.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				dispose();
+				Client test = new Client();
+				test.startConnection("127.0.0.1", 6666);
 				
+				Client test2 = new Client();
+				test2.startConnection("127.0.0.1",  6666);
 				
-			    Client client = new Client();
-			    client.startConnection("127.0.0.1", 6666);
-			    String response = client.sendMessage("hello server");
+				test.sendMessage("A");
+				test2.sendMessage("B");
 			}
 		});
 		btnShowEverything.setFont(new Font("Tahoma", Font.PLAIN, 12));

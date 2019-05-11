@@ -14,20 +14,24 @@ public class Client
 			clientSocket = new Socket (ip, port);
 			out = new PrintWriter (clientSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			
+			System.out.println("Client connected!");
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
-		}
+		}	
 	}
 	
 	public String sendMessage(String msg)
 	{
 		try
 		{
-			out.println("Hello from client");
+			out.println(msg);
 			String resp = in.readLine();
+			
 			System.out.println(resp);
+			
 			return resp;
 		}
 		catch (Exception ex)
