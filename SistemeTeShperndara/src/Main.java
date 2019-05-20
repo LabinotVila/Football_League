@@ -21,6 +21,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import java.awt.event.ItemListener;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.awt.event.ItemEvent;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
@@ -277,14 +280,14 @@ public class Main extends JFrame {
 		btnShowEverything.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				Client test = new Client();
-				test.startConnection("127.0.0.1", 6666);
-				
-				Client test2 = new Client();
-				test2.startConnection("127.0.0.1",  6666);
-				
-				test.sendMessage("A");
-				test2.sendMessage("B");
+				try 
+				{
+					new Client();
+				}
+				catch(Exception ex)
+				{
+					ex.printStackTrace();
+				}
 			}
 		});
 		btnShowEverything.setFont(new Font("Tahoma", Font.PLAIN, 12));

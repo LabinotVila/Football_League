@@ -1,58 +1,103 @@
-import java.io.*;
-import java.net.*;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 
-public class Client
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.border.EmptyBorder;
+
+public class Client 
 {
-	private Socket clientSocket;
-	private PrintWriter out;
-	private BufferedReader in;
+	String nickname;
+	Socket clientSocket;
+	DataInputStream in;
+	DataOutputStream out;
+	JTextArea txt_area;
+	JTextField txt_text;
 	
-	public void startConnection (String ip, int port)
+	
+	Client() throws UnknownHostException, IOException
 	{
-		try
-		{
-			clientSocket = new Socket (ip, port);
-			out = new PrintWriter (clientSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			
-			System.out.println("Client connected!");
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}	
+		clientSocket = new Socket ("127.0.0.1", 1234);
+		
+		in = new DataInputStream(clientSocket.getInputStream());
+		out = new DataOutputStream(clientSocket.getOutputStream());
+		
+		Thread t = new Thread(new Listen());
+		t.start();
+		
+		Frame();
+	}
+
+	void Frame()
+	{
+		JFrame frame = new JFrame();
+		frame.setBounds(200, 200, 500, 500);
+		JPanel contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		frame.setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		txt_area = new JTextArea();
+		txt_area.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		txt_area.setBounds(10, 10, 466, 404);
+		contentPane.add(txt_area);
+		
+		JButton btn_send = new JButton("Send");
+		btn_send.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btn_send.setBounds(366, 424, 110, 30);
+		contentPane.add(btn_send);
+		
+		txt_text = new JTextField();
+		txt_text.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		txt_text.setBounds(10, 424, 346, 30);
+		contentPane.add(txt_text);
+		txt_text.setColumns(10);
+		
+		btn_send.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try 
+				{
+					out.writeUTF(txt_text.getText());
+				} 
+				catch (Exception ex) 
+				{
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		frame.setVisible(true);
 	}
 	
-	public String sendMessage(String msg)
+	class Listen implements Runnable
 	{
-		try
+		public void run()
 		{
-			out.println(msg);
-			String resp = in.readLine();
-			
-			System.out.println(resp);
-			
-			return resp;
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-			
-			return null;
+			try
+			{
+				String resp = in.readUTF();
+				
+				txt_area.append(resp);
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
 		}
 	}
-	
-	public void stopConnection()
-	{
-		try
-		{
-			in.close();
-			out.close();
-			clientSocket.close();
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
-	}
+
 }
+

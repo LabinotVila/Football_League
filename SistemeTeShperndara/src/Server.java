@@ -1,42 +1,54 @@
-import java.net.*;
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Vector;
 
-public class Server {
-	private ServerSocket serverSocket;
-	private Socket clientSocket;
-	public void start (int port) throws IOException
-	{
-		serverSocket = new ServerSocket(port);
-		System.out.println("Server started");
-		
-		while (true)
-			new HandleClient(serverSocket.accept()).start();
-	}
+public class Server
+{
+	static Vector<ClientHandler> ar = new Vector<>();
 	
-	public void stop() throws IOException
+	public static void main (String[] args)
 	{
-		serverSocket.close();
-	}
-	
-	public static class HandleClient extends Thread
-	{
-		private Socket clientSocket;
-		private BufferedReader in;
-		private PrintWriter out;
-		
-		public HandleClient(Socket socket)
+		try
 		{
-			this.clientSocket = socket;
+			ServerSocket server = new ServerSocket(1234);
+			
+			Socket client;
+			while (true)
+			{
+				client = server.accept();
+				
+				System.out.println("Client conneceted with port: " + client.getPort());
+				
+				DataInputStream in = new DataInputStream(client.getInputStream());
+				DataOutputStream out = new DataOutputStream(client.getOutputStream());
+				
+				ClientHandler mtch = new ClientHandler(client, in, out);
+				
+				Thread t = new Thread(mtch);
+				ar.add(mtch);
+				
+				t.start();
+			}
+	
 		}
-		
-		public void run()
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	
+	static void Broadcast(String msg) throws IOException
+	{
+		for (int i = 0; i < ar.size(); i++)
 		{
 			try
 			{
-				out = new PrintWriter(clientSocket.getOutputStream(), true);
-				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));	
-				
-				out.println(in.readLine());
+				DataOutputStream out = new DataOutputStream(ar.get(i).client.getOutputStream());
+			
+				out.writeUTF(msg);
 			}
 			catch (Exception ex)
 			{
@@ -44,11 +56,36 @@ public class Server {
 			}
 		}
 	}
+}
+
+class ClientHandler implements Runnable
+{
+	Socket client;
+	final DataInputStream in;
+	final DataOutputStream out;
 	
-	
-	public static void main (String[] args) throws IOException
+	public ClientHandler(Socket client, DataInputStream in, DataOutputStream out)
 	{
-		Server server = new Server();
-		server.start(6666);
+		this.client = client;
+		this.in = in;
+		this.out = out;
+	}
+		
+	public void run()
+	{
+		String received;
+		while (true)
+		{
+			try
+			{
+				received = in.readUTF();
+				
+				Server.Broadcast(received);
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
+		}
 	}
 }
