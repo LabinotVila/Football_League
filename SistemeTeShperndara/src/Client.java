@@ -43,6 +43,8 @@ public class Client
 		t.start();
 		
 		Frame();
+		
+		SendMessage("* " + nickname + " has joined the chat!");
 	}
 
 	void Frame()
@@ -57,6 +59,7 @@ public class Client
 		txt_area = new JTextArea();
 		txt_area.setFont(new Font("Tahoma", Font.PLAIN, 12));
         txt_area.setLineWrap(true);
+        txt_area.setEditable(false);
         txt_area.setWrapStyleWord(true);
 		JScrollPane scroll = new JScrollPane(txt_area, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setBounds(10, 10, 466, 404);
@@ -66,7 +69,6 @@ public class Client
 		btn_send.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btn_send.setBounds(366, 424, 110, 30);
 		contentPane.add(btn_send);
-		
 		
 		txt_text = new JTextField();
 		txt_text.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -82,19 +84,28 @@ public class Client
 		btn_send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				try 
-				{
-					out.writeUTF(nickname + ": " + txt_text.getText());
-					out.flush();
-				} 
-				catch (Exception ex) 
-				{
-					ex.printStackTrace();
-				}
+				SendMessage(nickname + ": " + txt_text.getText());
+				
+				txt_text.setText("");
+				txt_text.requestFocus();
 			}
 		});
 		
 		frame.setVisible(true);
+	}
+	
+	void SendMessage(String msg)
+	{
+		try
+		{
+			out.writeUTF(msg);
+			out.flush();
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
 	}
 	
 	class Listen implements Runnable
@@ -107,12 +118,14 @@ public class Client
 				{
 					String resp = in.readUTF();
 					
-					txt_area.append(resp);
+					txt_area.append(resp + "\n");
 				}
 				catch (Exception ex)
 				{
 					ex.printStackTrace();
 				}
+				
+				
 			}
 		}
 	}

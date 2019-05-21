@@ -1,8 +1,10 @@
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Server
@@ -44,9 +46,9 @@ public class Server
 		{
 			try
 			{
-				DataOutputStream out = new DataOutputStream(ar.get(i).client.getOutputStream());
+				DataOutputStream out = ar.get(i).out;
 			
-				out.writeUTF(msg + "\n");
+				out.writeUTF(msg);
 				out.flush();
 			}
 			catch (Exception ex)
