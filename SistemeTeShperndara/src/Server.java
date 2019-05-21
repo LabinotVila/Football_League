@@ -20,8 +20,6 @@ public class Server
 			{
 				client = server.accept();
 				
-				System.out.println("Client conneceted with port: " + client.getPort());
-				
 				DataInputStream in = new DataInputStream(client.getInputStream());
 				DataOutputStream out = new DataOutputStream(client.getOutputStream());
 				
@@ -48,7 +46,8 @@ public class Server
 			{
 				DataOutputStream out = new DataOutputStream(ar.get(i).client.getOutputStream());
 			
-				out.writeUTF(msg);
+				out.writeUTF(msg + "\n");
+				out.flush();
 			}
 			catch (Exception ex)
 			{

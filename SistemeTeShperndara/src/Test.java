@@ -8,6 +8,9 @@ import javax.swing.JTextPane;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.Font;
+import javax.swing.JLabel;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.EtchedBorder;
 
 public class Test extends JFrame {
 
@@ -35,7 +38,7 @@ public class Test extends JFrame {
 	 */
 	public Test() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 500, 500);
+		setBounds(100, 100, 750, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -56,5 +59,20 @@ public class Test extends JFrame {
 		txt_text.setBounds(10, 424, 346, 30);
 		contentPane.add(txt_text);
 		txt_text.setColumns(10);
+		
+		JLabel lbl_nickname_as = new JLabel("");
+		lbl_nickname_as.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lbl_nickname_as.setBounds(486, 10, 240, 15);
+		contentPane.add(lbl_nickname_as);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		panel.setBounds(486, 35, 246, 419);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setBounds(6, 15, 240, 26);
+		panel.add(lblNewLabel);
 	}
 }
