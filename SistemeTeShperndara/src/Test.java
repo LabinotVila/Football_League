@@ -3,6 +3,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextPane;
 import javax.swing.JButton;
@@ -10,6 +12,7 @@ import javax.swing.JTextField;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.border.EtchedBorder;
 
 public class Test extends JFrame {
@@ -65,14 +68,15 @@ public class Test extends JFrame {
 		lbl_nickname_as.setBounds(486, 10, 240, 15);
 		contentPane.add(lbl_nickname_as);
 		
-		JPanel panel = new JPanel();
-		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel.setBounds(486, 35, 246, 419);
-		contentPane.add(panel);
-		panel.setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setBounds(6, 15, 240, 26);
-		panel.add(lblNewLabel);
+		DefaultTableModel model = new DefaultTableModel(); 
+		JTable table = new JTable(model); 
+		JScrollPane asd = new JScrollPane(table);
+
+		// Create a couple of columns 
+		model.addColumn("Header"); 
+		model.addRow(new Object[] {"Shit"});
+
+		asd.setBounds(486, 10, 246, 444);
+		contentPane.add(asd);
 	}
 }

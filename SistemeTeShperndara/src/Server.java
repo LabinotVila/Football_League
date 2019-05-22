@@ -9,7 +9,7 @@ import java.util.Vector;
 
 public class Server
 {
-	static Vector<ClientHandler> ar = new Vector<>();
+	public static Vector<ClientHandler> ar = new Vector<>();
 	
 	public static void main (String[] args)
 	{
@@ -72,6 +72,7 @@ class ClientHandler implements Runnable
 		this.out = out;
 	}
 		
+	@Override
 	public void run()
 	{
 		String received;
