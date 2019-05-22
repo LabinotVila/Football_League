@@ -7,30 +7,40 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class Server
+public class Server implements Runnable
 {
-	public static Vector<ClientHandler> ar = new Vector<>();
+	static public Vector<ClientHandler> ar = new Vector<>();
+	static public boolean on = false;
+	static ServerSocket server;
 	
-	public static void main (String[] args)
+	public void run ()
 	{
 		try
 		{
-			ServerSocket server = new ServerSocket(1234);
+			server = new ServerSocket(1234);
+			Server.on = true;
 			
 			Socket client;
 			while (true)
 			{
-				client = server.accept();
-				
-				DataInputStream in = new DataInputStream(client.getInputStream());
-				DataOutputStream out = new DataOutputStream(client.getOutputStream());
-				
-				ClientHandler mtch = new ClientHandler(client, in, out);
-				
-				Thread t = new Thread(mtch);
-				ar.add(mtch);
-				
-				t.start();
+				try
+				{
+					client = server.accept();
+					
+					DataInputStream in = new DataInputStream(client.getInputStream());
+					DataOutputStream out = new DataOutputStream(client.getOutputStream());
+					
+					ClientHandler mtch = new ClientHandler(client, in, out);
+					
+					Thread t = new Thread(mtch);
+					ar.add(mtch);
+					
+					t.start();
+				}
+				catch (Exception ex)
+				{
+					
+				}
 			}
 	
 		}
@@ -40,6 +50,18 @@ public class Server
 		}
 	}
 	
+	static void StopServer()
+	{
+		try 
+		{
+			server.close();
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+			
 	static void Broadcast(String msg) throws IOException
 	{
 		for (int i = 0; i < ar.size(); i++)
@@ -72,7 +94,6 @@ class ClientHandler implements Runnable
 		this.out = out;
 	}
 		
-	@Override
 	public void run()
 	{
 		String received;

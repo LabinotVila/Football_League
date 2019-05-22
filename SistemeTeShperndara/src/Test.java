@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.EtchedBorder;
+import javax.swing.SwingConstants;
 
 public class Test extends JFrame {
 
@@ -63,11 +64,6 @@ public class Test extends JFrame {
 		contentPane.add(txt_text);
 		txt_text.setColumns(10);
 		
-		JLabel lbl_nickname_as = new JLabel("");
-		lbl_nickname_as.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lbl_nickname_as.setBounds(486, 10, 240, 15);
-		contentPane.add(lbl_nickname_as);
-		
 		DefaultTableModel model = new DefaultTableModel(); 
 		JTable table = new JTable(model); 
 		JScrollPane asd = new JScrollPane(table);
@@ -76,7 +72,13 @@ public class Test extends JFrame {
 		model.addColumn("Header"); 
 		model.addRow(new Object[] {"Shit"});
 
-		asd.setBounds(486, 10, 246, 444);
+		asd.setBounds(486, 50, 246, 404);
 		contentPane.add(asd);
+		
+		JLabel lbl_currently_online = new JLabel("New label");
+		lbl_currently_online.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_currently_online.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lbl_currently_online.setBounds(486, 10, 246, 30);
+		contentPane.add(lbl_currently_online);
 	}
 }

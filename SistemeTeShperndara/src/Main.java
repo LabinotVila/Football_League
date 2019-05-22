@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -7,28 +6,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.EtchedBorder;
-import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import java.awt.event.ItemListener;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.awt.event.ItemEvent;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.SwingConstants;
 import javax.swing.JTable;
 
@@ -46,9 +34,11 @@ public class Main extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
+				try 
+				{
 					Main frame = new Main();
 					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -184,13 +174,13 @@ public class Main extends JFrame {
 		lblTeamManager.setBounds(10, 278, 330, 15);
 		contentPane.add(lblTeamManager);
 		
-		ResultSet fetched_seasons = Helper.fetchSeasons();
+		ResultSet fetched_seasons = Helper.fetchSeasons(conn);
 		addResultSetIntoComboBox(fetched_seasons, cmb_fetched_seasons);
 		
-		ResultSet fetched_weeks = Helper.fetchWeeks(Integer.parseInt(cmb_fetched_seasons.getItemAt(0).toString()));
+		ResultSet fetched_weeks = Helper.fetchWeeks(conn, Integer.parseInt(cmb_fetched_seasons.getItemAt(0).toString()));
 		addResultSetIntoComboBox(fetched_weeks, cmb_fetched_weeks);
 		
-		addResultSetIntoComboBox(Helper.fetchTeams(), cmb_fetched_teams);
+		addResultSetIntoComboBox(Helper.fetchTeams(conn), cmb_fetched_teams);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -207,13 +197,13 @@ public class Main extends JFrame {
 		cmb_team_one.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		cmb_team_one.setBounds(76, 33, 150, 25);
 		panel_2.add(cmb_team_one);
-		addResultSetIntoComboBox(Helper.fetchTeams(), cmb_team_one);
+		addResultSetIntoComboBox(Helper.fetchTeams(conn), cmb_team_one);
 		
 		JComboBox cmb_team_two = new JComboBox();
 		cmb_team_two.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		cmb_team_two.setBounds(238, 33, 150, 25);
 		panel_2.add(cmb_team_two);
-		addResultSetIntoComboBox(Helper.fetchTeams(), cmb_team_two);
+		addResultSetIntoComboBox(Helper.fetchTeams(conn), cmb_team_two);
 		
 		txt_date = new JTextField();
 		txt_date.setText("YYYY-MM-DD");
@@ -244,13 +234,13 @@ public class Main extends JFrame {
 		cmb_season.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		cmb_season.setBounds(138, 105, 100, 25);
 		panel_2.add(cmb_season);
-		addResultSetIntoComboBox(Helper.fetchSeasons(), cmb_season);
+		addResultSetIntoComboBox(Helper.fetchSeasons(conn), cmb_season);
 		
 		JComboBox cmb_week = new JComboBox();
 		cmb_week.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		cmb_week.setBounds(388, 105, 100, 25);
 		panel_2.add(cmb_week);
-		addResultSetIntoComboBox(Helper.fetchWeeks(Integer.parseInt(cmb_fetched_seasons.getItemAt(0).toString())), cmb_week);
+		addResultSetIntoComboBox(Helper.fetchWeeks(conn, Integer.parseInt(cmb_fetched_seasons.getItemAt(0).toString())), cmb_week);
 		
 		JLabel lblSeason = new JLabel("Season");
 		lblSeason.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -282,7 +272,14 @@ public class Main extends JFrame {
 			{
 				try 
 				{
-					new Client();
+					if (Server.on == false)
+					{
+						lbl_notify.setText("Please start the server first, it seems to be stopped!");
+					}
+					else
+					{
+						new Client();
+					}
 				}
 				catch(Exception ex)
 				{
@@ -318,6 +315,31 @@ public class Main extends JFrame {
 		JScrollPane latest_scroll = new JScrollPane(table);
 		latest_scroll.setBounds(10,55,606,170);
 		panel_3.add(latest_scroll);
+		
+		JButton btn_server = new JButton("Server");
+		btn_server.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				Server.on = !Server.on;
+				
+				if (Server.on == true)
+				{
+					Thread start = new Thread(new Server());
+					start.start();
+					
+					lbl_notify.setText("Server started.");
+				}
+				else
+				{
+					Server.StopServer();
+					lbl_notify.setText("Server stopped.");
+				}
+
+			}
+		});
+		btn_server.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btn_server.setBounds(306, 10, 150, 35);
+		panel_3.add(btn_server);
 		
 		
 		JLabel lblDisplayLatestAdditions = new JLabel("Display Latest Additions");
@@ -425,11 +447,11 @@ public class Main extends JFrame {
 		cmb_fetched_seasons.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) 
 			{
-				Helper.clearComboBox(cmb_fetched_weeks);
+				Helper.clearComboBox(conn, cmb_fetched_weeks);
 				
 				int selected_season = Integer.parseInt(cmb_fetched_seasons.getSelectedItem().toString());
 				
-				ResultSet fetched_weeks = Helper.fetchWeeks(selected_season);
+				ResultSet fetched_weeks = Helper.fetchWeeks(conn, selected_season);
 				try
 				{
 					while(fetched_weeks.next())
@@ -448,11 +470,11 @@ public class Main extends JFrame {
 		cmb_season.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) 
 			{
-				Helper.clearComboBox(cmb_week);
+				Helper.clearComboBox(conn, cmb_week);
 				
 				int selected_season = Integer.parseInt(cmb_season.getSelectedItem().toString());
 				
-				ResultSet fetched_weeks = Helper.fetchWeeks(selected_season);
+				ResultSet fetched_weeks = Helper.fetchWeeks(conn, selected_season);
 				try
 				{
 					while(fetched_weeks.next())

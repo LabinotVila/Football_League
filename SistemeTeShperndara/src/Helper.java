@@ -5,9 +5,7 @@ import javax.swing.JComboBox;
 
 public class Helper 
 {
-	static java.sql.Connection conn = Connection.getConnection();
-	
-	public static ResultSet fetchSeasons()
+	public static ResultSet fetchSeasons(java.sql.Connection conn)
 	{
 		try 
 		{
@@ -24,7 +22,7 @@ public class Helper
 		}
 	}
 	
-	public static ResultSet fetchWeeks(int from_season)
+	public static ResultSet fetchWeeks(java.sql.Connection conn, int from_season)
 	{
 		try 
 		{
@@ -41,7 +39,7 @@ public class Helper
 		}
 	}
 	
-	public static ResultSet fetchTeams()
+	public static ResultSet fetchTeams(java.sql.Connection conn)
 	{
 		try
 		{
@@ -58,7 +56,7 @@ public class Helper
 		}
 	}
 	
-	public static void clearComboBox (JComboBox combobox)
+	public static void clearComboBox (java.sql.Connection conn, JComboBox combobox)
 	{
 		for (int i = 0; i < combobox.getItemCount(); i++)
 		{
@@ -66,7 +64,7 @@ public class Helper
 		}
 	}
 
-	public static String findTeamById(int team_id)
+	public static String findTeamById(java.sql.Connection conn, int team_id)
 	{	
 		try
 		{

@@ -7,7 +7,7 @@ public class Connection
 	{
 		try
 		{
-			java.sql.Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/League", "root", "LvOa000!");
+			java.sql.Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/League?autoReconnect=true&useSSL=false", "", "");
 			
 			return conn;
 		}

@@ -21,6 +21,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
@@ -38,6 +39,7 @@ public class Client
 	JTextArea txt_area;
 	DefaultTableModel table_model;
 	JTable table_list;
+	JLabel lbl_currently_online;
 	
 	Client() throws UnknownHostException, IOException
 	{
@@ -62,6 +64,11 @@ public class Client
 		SendMessage(":refreshList: :join:");
 	}
 
+	void UpdateCurrentlyOnline(int size)
+	{
+		lbl_currently_online.setText("Currently online: " + String.valueOf(size) + ", as: " + nickname);
+	}
+	
 	void Frame()
 	{
 		JFrame frame = new JFrame();
@@ -107,13 +114,14 @@ public class Client
 		table_model.addColumn("Online:");
 		
 		JScrollPane scroll_list = new JScrollPane(table_list);
-		scroll_list.setBounds(486, 10, 246, 444);
+		scroll_list.setBounds(486, 50, 246, 404);
 		contentPane.add(scroll_list);
 		
-		JLabel lbl_nickname_as = new JLabel("Current nickname: " + nickname);
-		lbl_nickname_as.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lbl_nickname_as.setBounds(486, 10, 240, 15);
-		contentPane.add(lbl_nickname_as);
+		lbl_currently_online = new JLabel("Currently online: " + connected.size() + ", as: " + nickname);
+		lbl_currently_online.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_currently_online.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lbl_currently_online.setBounds(486, 10, 246, 30);
+		contentPane.add(lbl_currently_online);
 		
 		btn_send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
@@ -176,6 +184,7 @@ public class Client
 		}
 		
 		table_list.setModel(table_model);
+		UpdateCurrentlyOnline(connected.size());
 		
 		if (fault == ":left")
 		{
