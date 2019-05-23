@@ -4,11 +4,11 @@
 
 This application is made as an example of a TCP multithreaded chat application, where multiple clients can communicate with each other via text messages. The application consists of:
 
-###### Main frame - the frame where you start and stop the server. If the server is stopped, no client can be created, otherwise, you can create as much clients as possible. The host I have used is the *localhost* with port *6666* assigned to it. 
+- Main frame - the frame where you start and stop the server. If the server is stopped, no client can be created, otherwise, you can create as much clients as possible. The host I have used is the *localhost* with port *6666* assigned to it. 
 
-###### Main GUI - created on the client side, where user can see the *online users list* and *user count number*. User can send messages via *send* button.
+- Main GUI - created on the client side, where user can see the *online users list* and *user count number*. User can send messages via *send* button.
 
-###### Server side - the part where server proceeds requests to every client connected on the server. The server works as a broadcaster.
+- Server side - the part where server proceeds requests to every client connected on the server. The server works as a broadcaster.
 
 ## Screenshots
 **Main frame with server start / stop button and client creation button**
